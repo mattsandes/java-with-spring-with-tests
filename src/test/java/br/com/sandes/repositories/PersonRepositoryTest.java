@@ -1,15 +1,16 @@
 package br.com.sandes.repositories;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import br.com.sandes.model.Person;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import br.com.sandes.model.Person;
-
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class PersonRepositoryTest {
@@ -91,5 +92,77 @@ class PersonRepositoryTest {
 		assertEquals(savedPerson.getAddress(), "Rua dos Noiados 107 - Recife - Brasil");
 		assertEquals(savedPerson.getGender(), "Male");
 		assertEquals(savedPerson.getEmail(), "mateus.sandes@saidae.com.br");
+	}
+
+	@Test
+	@DisplayName("Given Person Object When Save Then Return Person By Id")
+	void testGivenPersonObject_WhenFindByEmail_thenReturnSPersonObject() {
+
+		//given
+		Person person0 = new Person(
+				"Mateus",
+				"Sandes",
+				"Rua dos Noiados 107 - Recife - Brasil",
+				"Male",
+				"mateus.sandes@saidae.com.br");
+
+		repository.save(person0);
+
+		Person savedPerson = repository.findByEmail(
+				person0.getEmail())
+				.get();
+		//when
+
+		//then
+		assertNotNull(savedPerson);
+		assertEquals(savedPerson.getEmail(), "mateus.sandes@saidae.com.br");
+	}
+
+	@Test
+	@DisplayName("Given Person Object When Update Person Then Return Updated Person Object")
+	void testGivenPersonObject_WhenUpdatePerson_thenReturnUpdatedPersonObject() {
+
+		//given
+		Person person0 = new Person(
+				"Mateus",
+				"Sandes",
+				"Rua dos Noiados 107 - Recife - Brasil",
+				"Male",
+				"mateus.sandes@saidae.com.br");
+
+		Person savedPerson = repository.save(person0);
+
+		//when
+		var foundPerson = repository.findById(savedPerson.getId());
+		savedPerson.setFirstName("Changed Name");
+		savedPerson.setEmail("mateus.sandes@peramermao.com.br");
+
+		Person updatedPerson = repository.save(savedPerson);
+
+		//then
+		assertNotNull(updatedPerson);
+		assertEquals(updatedPerson.getFirstName(), "Changed Name");
+		assertEquals(updatedPerson.getEmail(), "mateus.sandes@peramermao.com.br");
+	}
+
+	@Test
+	@DisplayName("Given Person Object When Delete Then Remove Person")
+	void testGivenPersonObject_whenDelete_thenRemovePerson() {
+
+		//given
+		Person person0 = new Person(
+				"Mateus",
+				"Sandes",
+				"Rua dos Noiados 107 - Recife - Brasil",
+				"Male",
+				"mateus.sandes@saidae.com.br");
+
+		repository.save(person0);
+
+		repository.deleteById(person0.getId());
+
+		Optional<Person> personOptional = repository.findById(person0.getId());
+
+		assertTrue(personOptional.isEmpty());
 	}
 }
