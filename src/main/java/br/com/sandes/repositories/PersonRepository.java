@@ -5,5 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import br.com.sandes.model.Person;
 
+import java.util.Optional;
+
 @Repository
-public interface PersonRepository extends JpaRepository<Person, Long>{}
+public interface PersonRepository extends JpaRepository<Person, Long>{
+
+    Optional<Person> findByEmail(String email);
+}
