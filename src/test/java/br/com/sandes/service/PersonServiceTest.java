@@ -1,5 +1,6 @@
 package br.com.sandes.service;
 
+import br.com.sandes.exceptions.ResourceNotFoundException;
 import br.com.sandes.model.Person;
 import br.com.sandes.repositories.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,10 +13,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.hamcrest.Matchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
@@ -52,5 +55,22 @@ public class PersonServiceTest {
         //Then (Assert)
         assertNotNull(savedPerson);
         assertEquals(savedPerson.getEmail(), "mateus.sandes@saidae.com.br");
+    }
+
+    @DisplayName("Test name/Test class name")
+    @Test
+    void testGivenExistingEmail_WhenSavePerson_thenThrowsException(){
+
+        //Given (Arrange)
+        given(repository.findByEmail(anyString()))
+                .willReturn(Optional.of(person0));
+
+        //When (Act)
+        assertThrows(ResourceNotFoundException.class, () -> {
+            service.create(person0);
+        });
+
+        //Then (Assert)
+        verify(repository, never()).save(person0);
     }
 }
