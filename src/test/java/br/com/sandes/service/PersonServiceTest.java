@@ -11,16 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
@@ -96,5 +95,20 @@ public class PersonServiceTest {
         //Then (Assert)
         assertNotNull(result);
         assertEquals(2, result.size());
+    }
+
+    @DisplayName("Given Persons Lists When Find All Persons then Return Empty Persons List")
+    @Test
+    void testGivenEmptyPersonsLists_WhenFindAllPersons_thenReturnEmptyPersonsList(){
+
+        //Given (Arrange)
+        given(repository.findAll()).willReturn(Collections.emptyList());
+
+        //When (Act)
+        List<Person> result = service.findAll();
+
+        //Then (Assert)
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.size());
     }
 }
