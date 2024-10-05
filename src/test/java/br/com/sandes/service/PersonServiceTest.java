@@ -16,10 +16,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
@@ -146,5 +147,21 @@ public class PersonServiceTest {
         //Then (Assert)
         assertEquals("Alves", updatePerson.getLastName());
         assertEquals("mateus.sandes.lisboa@saidae.com.br", updatePerson.getEmail());
+    }
+
+    @DisplayName("Given Person Id When Delete Person Then Do Nothing")
+    @Test
+    void testGivenPersonId_WhenDeletePerson_thenDoNothing(){
+
+        //Given (Arrange)
+        person0.setId(1L);
+        given(repository.findById(anyLong())).willReturn(Optional.of(person0));
+        willDoNothing().given(repository).delete(person0);
+
+        //When (Act)
+        service.delete(person0.getId());
+
+        //Then (Assert)
+        verify(repository, times(1)).delete(person0);
     }
 }
