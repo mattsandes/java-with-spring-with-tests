@@ -13,9 +13,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -64,5 +68,33 @@ public class PersonControllerTest {
                 .andExpect(jsonPath("$.firstName", is(person0.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(person0.getLastName())))
                 .andExpect(jsonPath("$.email", is(person0.getEmail())));
+    }
+
+    @DisplayName("Given Person Object List When Find All Persons Then Return Person Object List")
+    @Test
+    void testGivenPersonObjectList_WhenFindAllPersons_thenReturnPersonObjectList() throws Exception {
+
+        //Given (Arrange)
+        List<Person> personList = new ArrayList<>();
+
+        personList.add(person0);
+
+        Person person1 = new Person(
+                "Rebeca",
+                "Alves",
+                "Rua dos Noiados 107 - Recife - Brasil",
+                "Female",
+                "rebeca.alves@saidae.com.br");
+
+        given(service.findAll()).willReturn(personList);
+
+        //When (Act)
+        ResultActions response = mockMvc.perform(get("/person"));
+
+        //Then (Assert)
+        response
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.size()", is(personList.size())));
     }
 }
