@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import br.com.sandes.model.Person;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +24,8 @@ public interface PersonRepository extends JpaRepository<Person, Long>{
     Person findByJPQLNamedParameters(
             @Param("firstName") String firstName,
             @Param("lastName") String lastName);
+
+    //Criando uma query nativa;
+    @Query(value = "select * from person p where p.first_name = ?1 and p.last_name = ?2", nativeQuery = true)
+    Person findByNativeSQL(String firstName, String lastName);
 }
