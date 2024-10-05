@@ -1,6 +1,7 @@
 package br.com.sandes.repositories;
 
 import br.com.sandes.model.Person;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,25 +15,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class PersonRepositoryTest {
+
+	private Person person0;
 	
 	@Autowired
 	PersonRepository repository;
-	
-	@Test
-	@DisplayName("Given Person Object When Save Then Return Save Person")
-	void testGivenPersonObject_WhenSave_thenReturnSavePerson() {
-		
-		//given
-		Person person0 = new Person(
+
+	@BeforeEach
+	void setUp(){
+		person0 = new Person(
 				"Mateus",
 				"Sandes",
 				"Rua dos Noiados 107 - Recife - Brasil",
 				"Male",
 				"mateus.sandes@saidae.com.br");
-		
-		//when
+	}
+	
+	@Test
+	@DisplayName("Given Person Object When Save Then Return Save Person")
+	void testGivenPersonObject_WhenSave_thenReturnSavePerson() {
+
+		//given
 		Person savedPerson = repository.save(person0);
-		
+
 		//then
 		assertNotNull(savedPerson);
 		assertTrue(savedPerson.getId() > 0);
@@ -43,13 +48,6 @@ class PersonRepositoryTest {
 	void testGivenPersonObject_WhenSave_thenReturnPersonList() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		Person person1 = new Person(
 				"Rebeca",
 				"Sandes",
@@ -73,13 +71,6 @@ class PersonRepositoryTest {
 	void testGivenPersonObject_WhenSave_thenReturnSavePersonById() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		Person savedPerson = repository.save(person0);
 
 		var foundPeson = repository.findById(savedPerson.getId());
@@ -99,13 +90,6 @@ class PersonRepositoryTest {
 	void testGivenPersonObject_WhenFindByEmail_thenReturnSPersonObject() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		repository.save(person0);
 
 		Person savedPerson = repository.findByEmail(
@@ -123,13 +107,6 @@ class PersonRepositoryTest {
 	void testGivenPersonObject_WhenUpdatePerson_thenReturnUpdatedPersonObject() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		Person savedPerson = repository.save(person0);
 
 		//when
@@ -150,13 +127,6 @@ class PersonRepositoryTest {
 	void testGivenPersonObject_whenDelete_thenRemovePerson() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		repository.save(person0);
 
 		repository.deleteById(person0.getId());
@@ -171,13 +141,6 @@ class PersonRepositoryTest {
 	void testGivenFirstNameAndLastName_WhenFindByJPQL_thenReturnPersonObject() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		repository.save(person0);
 
 		//when
@@ -196,13 +159,6 @@ class PersonRepositoryTest {
 	void testGivenFirstNameAndLastName_WhenFindByJPQLNamedParameters_thenReturnPersonObject() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		repository.save(person0);
 
 		//when
@@ -221,13 +177,6 @@ class PersonRepositoryTest {
 	void testGivenFirstNameAndLastName_WhenFindByNativeSQL_thenReturnPersonObject() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		repository.save(person0);
 
 		//when
@@ -246,13 +195,6 @@ class PersonRepositoryTest {
 	void testGivenFirstNameAndLastName_WhenFindByNativeSQLAndNameParameters_thenReturnPersonObject() {
 
 		//given
-		Person person0 = new Person(
-				"Mateus",
-				"Sandes",
-				"Rua dos Noiados 107 - Recife - Brasil",
-				"Male",
-				"mateus.sandes@saidae.com.br");
-
 		repository.save(person0);
 
 		//when
