@@ -1,6 +1,7 @@
 package br.com.sandes.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,12 @@ public class PersonService {
 	
 	public Person create(Person person) {
 		logger.info("Person created");
+
+		Optional<Person> savedPerson = repository.findByEmail(person.getEmail());
+
+		if(savedPerson.isPresent()){
+			throw new ResourceNotFoundException("Person exist for the e-mail: " + person.getEmail());
+		}
 		
 		return repository.save(person);
 	}
