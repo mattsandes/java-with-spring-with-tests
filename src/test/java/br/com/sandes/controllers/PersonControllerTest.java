@@ -1,5 +1,6 @@
 package br.com.sandes.controllers;
 
+import br.com.sandes.exceptions.ResourceNotFoundException;
 import br.com.sandes.model.Person;
 import br.com.sandes.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,8 +20,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -116,5 +116,49 @@ public class PersonControllerTest {
                 .andExpect(jsonPath("$.firstName", is(person0.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(person0.getLastName())))
                 .andExpect(jsonPath("$.email", is(person0.getEmail())));
+    }
+
+    @DisplayName("Given Invalid Person Id When Find By Id Then Return Not Found")
+    @Test
+    void testGivenInvalidPersonId_WhenFindById_thenReturnNotFound() throws Exception {
+
+        //Given (Arrange)
+        Long personId = 1L;
+        given(service.findById(personId)).willThrow(ResourceNotFoundException.class);
+
+        //When (Act)
+        ResultActions response = mockMvc.perform(get("/person/{id}", personId));
+
+        //Then (Assert)
+        response
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @DisplayName("Given Update Person When Update Person Then Return Updated PersonObject")
+    @Test
+    void testGivenUpdatePerson_WhenUpdatePerson_thenReturnUpdatedPersonObject() throws Exception {
+        //Given (Arrange)
+        Long personId = 1L;
+
+        Person updatePerson = new Person(
+                "Mateus",
+                "Alves",
+                "Rua dos Noiados 107 - Recife - Brasil",
+                "Male",
+                "mateus.alves@saidae.com.br");
+
+        //When (Act)
+        ResultActions response = mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updatePerson)));
+
+        //Then (Assert)
+        response
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.firstName", is(updatePerson.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(updatePerson.getLastName())))
+                .andExpect(jsonPath("$.email", is(updatePerson.getEmail())));
     }
 }
