@@ -2,6 +2,7 @@ package br.com.sandes.controller;
 
 import java.util.List;
 
+import br.com.sandes.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,13 @@ public class PersonController {
 	@GetMapping(
 			value = "/{id}",
 			 produces = MediaType.APPLICATION_JSON_VALUE)
-	public Person findById(@PathVariable(value = "id") Long id) {
-		
-		return service.findById(id);
+	public ResponseEntity<Person> findById(@PathVariable(value = "id") Long id) {
+
+		try{
+			return ResponseEntity.ok(service.findById(id));
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@PostMapping(
