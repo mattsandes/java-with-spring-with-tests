@@ -140,9 +140,12 @@ public class PersonControllerTest {
     void testGivenUpdatePerson_WhenUpdatePerson_thenReturnUpdatedPersonObject() throws Exception {
         //Given (Arrange)
         Long personId = 1L;
+        given(service.findById(personId)).willReturn(person0);
+        given(service.update(any(Person.class)))
+                .willAnswer((invocation) -> invocation.getArgument(0));
 
         Person updatePerson = new Person(
-                "Mateus",
+                "Mateus Doido",
                 "Alves",
                 "Rua dos Noiados 107 - Recife - Brasil",
                 "Male",
@@ -157,7 +160,7 @@ public class PersonControllerTest {
         response
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.firstName", is(updatePerson.getFirstName())))
+                .andExpect(jsonPath("$.firstName",is(updatePerson.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(updatePerson.getLastName())))
                 .andExpect(jsonPath("$.email", is(updatePerson.getEmail())));
     }
