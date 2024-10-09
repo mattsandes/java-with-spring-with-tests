@@ -140,6 +140,7 @@ public class PersonControllerTest {
     void testGivenUpdatePerson_WhenUpdatePerson_thenReturnUpdatedPersonObject() throws Exception {
         //Given (Arrange)
         Long personId = 1L;
+
         given(service.findById(personId)).willReturn(person0);
         given(service.update(any(Person.class)))
                 .willAnswer((invocation) -> invocation.getArgument(0));
@@ -163,5 +164,33 @@ public class PersonControllerTest {
                 .andExpect(jsonPath("$.firstName",is(updatePerson.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(updatePerson.getLastName())))
                 .andExpect(jsonPath("$.email", is(updatePerson.getEmail())));
+    }
+
+    @DisplayName("Given Update Person When Update Person Then Return Updated PersonObject")
+    @Test
+    void testGivenUnexistentPerson_WhenUpdatePerson_thenReturnNotFound() throws Exception {
+        //Given (Arrange)
+        Long personId = 1L;
+
+        given(service.findById(personId)).willThrow(ResourceNotFoundException.class);
+        given(service.update(any(Person.class)))
+                .willAnswer((invocation) -> invocation.getArgument(1));
+
+        Person updatePerson = new Person(
+                "Mateus Doido",
+                "Alves",
+                "Rua dos Noiados 107 - Recife - Brasil",
+                "Male",
+                "mateus.alves@saidae.com.br");
+
+        //When (Act)
+        ResultActions response = mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updatePerson)));
+
+        //Then (Assert)
+        response
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 }
