@@ -3,6 +3,7 @@ package br.com.sandes.controller;
 import java.util.List;
 
 import br.com.sandes.exceptions.ResourceNotFoundException;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +55,13 @@ public class PersonController {
 	@PutMapping(
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public Person update(@RequestBody Person person) {
-		
-		return service.update(person);
+	public ResponseEntity<Person> update(@RequestBody Person person) {
+
+		try{
+			return ResponseEntity.ok(service.update(person));
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@DeleteMapping(value = "/{id}")
