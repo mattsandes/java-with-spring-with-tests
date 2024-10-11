@@ -1,4 +1,4 @@
-package br.com.sandes;
+package br.com.sandes.integrationtests.swagger;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
