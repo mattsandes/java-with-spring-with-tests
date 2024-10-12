@@ -54,11 +54,11 @@ public class ControllerIntegrationTest extends AbstractIntegrationTest {
                 .contentType(TestConfig.CONTENT_TYPE_JSON)
                 .body(person)
                 .when()
-                .post()
+                    .post()
                 .then()
-                .statusCode(200)
-                .extract()
-                .body()
+                    .statusCode(200)
+                    .extract()
+                        .body()
                 .asString();
 
         Person createdPerson = mapper.readValue(content, Person.class);
